@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Blotter · OrderDesk{% endblock %}
+{% block content %}
+<section class="card wide">
+  <h1 data-testid="blotter-title">Order blotter</h1>
+  {% if created %}<p class="alert success" data-testid="order-success" data-order-id="{{ created }}">Order #{{ created }} submitted.</p>{% endif %}
+  {% if error %}<p class="alert error" data-testid="blotter-error">{{ error }}</p>{% endif %}
+  {% if orders %}
+  <div class="table-wrap">
+  <table data-testid="blotter-table">
+    <thead><tr><th>ID</th><th>Time (UTC)</th><th>Symbol</th><th>Side</th><th class="num">Qty</th><th>Type</th><th class="num">Price</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+    {% for o in orders %}
+      <tr data-testid="order-row-{{ o.id }}">
+        <td class="num">{{ o.id }}</td>
+        <td class="mono">{{ o.created_at.strftime("%H:%M:%S") }}</td>
+        <td class="mono">{{ o.symbol }}</td>
+        <td class="{{ o.side|lower }}">{{ o.side }}</td>
+        <td class="num">{{ "{:,}".format(o.qty) }}</td>
+        <td>{{ o.order_type }}</td>
+        <td class="num">{{ "%.2f"|format(o.price) if o.price is not none else "MKT" }}</td>
+        <td><span class="status {{ o.status|lower }}" data-testid="order-status-{{ o.id }}">{{ o.status }}</span></td>
+        <td>
+          {% if user.role == "trader" and o.status == "NEW" %}
+          <form method="post" action="/orders/{{ o.id }}/cancel"><button class="link" data-testid="cancel-{{ o.id }}">Cancel</button></form>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}
+  <p data-testid="blotter-empty">No orders yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

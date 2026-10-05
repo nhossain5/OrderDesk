@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}New order · OrderDesk{% endblock %}
+{% block content %}
+<section class="card ticket">
+  <h1 data-testid="ticket-title">Order ticket</h1>
+  {% if user.role != "trader" %}
+    <p class="alert info" data-testid="role-notice">Viewers can see the blotter but cannot submit orders.</p>
+  {% endif %}
+  {% if errors %}
+    <ul class="alert error" data-testid="form-error">
+      {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+    </ul>
+  {% endif %}
+  {# No HTML min/max/required on purpose: the server is the source of truth, so tests can reach every rule. #}
+  <form method="post" action="/orders/new" novalidate>
+    <label for="symbol">Symbol</label>
+    <select id="symbol" name="symbol" data-testid="symbol">
+      {% for s in symbols %}<option value="{{ s }}" {% if form.symbol == s %}selected{% endif %}>{{ s }}</option>{% endfor %}
+    </select>
+
+    <fieldset class="side">
+      <legend>Side</legend>
+      <label class="buy"><input type="radio" name="side" value="Buy" data-testid="side-buy" {% if form.side == "Buy" %}checked{% endif %}> Buy</label>
+      <label class="sell"><input type="radio" name="side" value="Sell" data-testid="side-sell" {% if form.side == "Sell" %}checked{% endif %}> Sell</label>
+    </fieldset>
+
+    <label for="qty">Quantity</label>
+    <input id="qty" name="qty" inputmode="numeric" value="{{ form.qty or '' }}" data-testid="qty">
+
+    <label for="order_type">Order type</label>
+    <select id="order_type" name="order_type" data-testid="order-type">
+      {% for t in order_types %}<option value="{{ t }}" {% if form.order_type == t %}selected{% endif %}>{{ t }}</option>{% endfor %}
+    </select>
+
+    <label for="price">Limit price</label>
+    <input id="price" name="price" inputmode="decimal" value="{{ form.price or '' }}" placeholder="Limit orders only" data-testid="price">
+
+    <button type="submit" class="primary" data-testid="submit" {% if user.role != "trader" %}disabled{% endif %}>Submit order</button>
+  </form>
+</section>
+{% endblock %}

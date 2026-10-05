@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Log in · OrderDesk{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>Log in to the desk</h1>
+  {% if error %}<p class="alert error" data-testid="login-error">{{ error }}</p>{% endif %}
+  <form method="post" action="/login">
+    <label for="username">Username</label>
+    <input id="username" name="username" value="{{ username }}" autocomplete="username" data-testid="username">
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" autocomplete="current-password" data-testid="password">
+    <button type="submit" class="primary" data-testid="login-submit">Log in</button>
+  </form>
+  <p class="hint">Demo accounts: trader / trader123, viewer / viewer123</p>
+</section>
+{% endblock %}

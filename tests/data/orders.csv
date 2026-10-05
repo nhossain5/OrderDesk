@@ -1,0 +1,10 @@
+case_id,req_id,layers,symbol,side,qty,order_type,price,expected
+TC-05-01,REQ-05,ui+api,ABC1,Buy,1,Market,,accepted
+TC-05-02,REQ-05,ui+api,ABC1,Buy,10000,Market,,accepted
+TC-05-03,REQ-05,ui+api,ABC1,Buy,0,Market,,Quantity must be between 1 and 10000
+TC-05-04,REQ-05,ui+api,ABC1,Sell,10001,Market,,Quantity must be between 1 and 10000
+TC-06-01,REQ-06,ui+api,DEF2,Sell,100,Limit,,Limit orders require a price
+TC-07-01,REQ-07,ui+api,DEF2,Buy,100,Limit,0,Price must be greater than 0
+TC-07-02,REQ-07,ui+api,DEF2,Buy,100,Limit,72.345,Price allows at most 2 decimals
+TC-07-03,REQ-07,ui+api,DEF2,Buy,100,Limit,72.34,accepted
+TC-03-01,REQ-03,api,ZZZ9,Buy,100,Market,,Unknown symbol
